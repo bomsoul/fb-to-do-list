@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from '../Firebase';
+import { Redirect } from 'react-router';
 
 const database = firebase.firestore();
 
@@ -10,7 +11,9 @@ class Create extends React.Component{
         this.state={
             title: "",
             description: "",
-            status: false
+            status: false,
+            duedate: "",
+            redirectToReferrer: false
         }
     }
 
@@ -30,7 +33,11 @@ class Create extends React.Component{
         this.setState({
             status : !this.state.status
         })
-        
+    }
+    onDateChange =(e) =>{
+        this.setState({
+            duedate : e.target.value
+        })
     }
 
     onSubmitChange = (e) =>{
@@ -38,14 +45,19 @@ class Create extends React.Component{
         database.collection("todos").doc().set({
             title: this.state.title,
             description: this.state.description,
-            status : this.state.status
+            status : this.state.status,
+            duedate : this.state.duedate
         });
         this.setState({
             title: "",
             description: "",
-            status: false
+            status: false,
+            duedate: ""
         })
         alert("Add Todo success!!");
+        this.setState({
+            redirectToReferrer: true
+          })
 
     }
 
@@ -54,7 +66,7 @@ class Create extends React.Component{
             <div>
                 <form className="ui form" onSubmit={this.onSubmitChange}>
                     <div className="field">
-                        <label>Title</label>
+                        <label>Title :</label>
                         <div className="ui fluid input">
                             <input 
                                 name="title"
@@ -66,7 +78,7 @@ class Create extends React.Component{
                         </div>
                     </div>
                     <div class="field">
-                        <label>Description</label>
+                        <label>Description :</label>
                         <textarea 
                             name="description"
                             value = {this.state.description}
@@ -75,6 +87,18 @@ class Create extends React.Component{
                             onChange={this.onDescriptionChange}
                         >
                         </textarea>
+                    </div>
+                    <div className="field">
+                        <label>Due Date :</label>
+                        <div className="ui fluid input">
+                            <input 
+                                name="title"
+                                value = {this.state.duedate}
+                                type="date" 
+                                placeholder="Title Name"
+                                onChange={this.onDateChange} 
+                            />
+                        </div>
                     </div>
                     <div className="field">
                         <div className="ui checkbox">
